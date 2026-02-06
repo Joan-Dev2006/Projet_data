@@ -1,0 +1,63 @@
+services:
+  db_sql:
+    image: mysql:8.0
+    restart: always
+    container_name: conteneur_BD
+    environment:
+      MYSQL_ROOT_PASSWORD: mon_projet123
+      MYSQL_DATABASE: gestion_produit
+      MYSQL_ALLOW_EMPTY_PASSWORD: no
+      MYSQL_USER: root
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./scripts/gestion_produit.sql:/docker-entrypoint-initdb.d
+    networks:
+      - prod-network
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    container_name: adminer_db
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db_sql:
+    environment:
+      ADMINER_DEFAULT_SERVER: db_sql
+    networks:
+      -prod-network  
+
+ 
+   portainer:
+     image: portainer/portainer-ce:latest
+     container_name: portainer_bd
+     restart: always
+     volumes: 
+       - ./data_portainer:/data
+       - /var/run/docker.sock:/var/run/docker.sock
+     ports:
+       - "9443:9443"
+      networks:
+        - prod-network
+networks:
+  prod-network:  # reseau virtuel prive
+    driver: bridge  # mon hote 
+ 
+      
+   
+
+
+s
+
+
+
+
+
+
+
+
+
+
+
+
+
