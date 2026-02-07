@@ -1,27 +1,26 @@
-# 📊 Projet Data - Gestion de Produits (UTT)
+# 📊 Infrastructure Cloud & Service-Desk (UTT)
 
-> **Système d'infrastructure de base de données conteneurisée avec traçabilité dynamique des prix.**
+> **Projet de déploiement conteneurisé d'une base de données analytique avec traçabilité dynamique.**
 
 ---
 
-## 🏗️ Architecture du Système
-L'écosystème repose sur trois piliers principaux pour garantir la performance et la visibilité :
+## 📝 Description
+Ce projet déploie une infrastructure complète via Docker Compose. Il intègre une logique métier SQL avancée pour la gestion d'un catalogue produit, incluant un système d'audit automatique des prix.
 
-| Composant | Technologie | Port | Rôle |
+## 🏗️ Architecture des Services
+| Service | Technologie | Port | Usage |
 | :--- | :--- | :--- | :--- |
-| **Database** | `MySQL 8.0` | `3306` | Stockage persistant & Triggers |
-| **Gestionnaire** | `Adminer` | `8080` | Interface de gestion SQL |
-| **Monitoring** | `Portainer` | `9444` | Gestion des conteneurs Docker |
+| **Database** | `MySQL 8.0` | `3306` | Moteur de données & Triggers |
+| **Adminer** | `PHP 8.2` | `8080` | Interface de gestion SQL |
+| **Portainer** | `Docker` | `9444` | Monitoring des conteneurs |
 
+## 🧠 Intelligence de Données (SQL)
+Le système ne se contente pas de stocker, il analyse :
+* **Trigger `avant_changement_prix`** : Historisation automatique de l'ancien prix avant chaque mise à jour.
+* **Vue `vue_alerte_inflation`** : Détection en temps réel des hausses de prix > 10%.
 
-
----
-
-## 🚀 Déploiement Rapide
-
-Pour lancer l'environnement de production sur votre machine locale, suivez ces étapes :
-
-### 1️⃣ Configuration
-Copiez le fichier d'exemple et renseignez vos identifiants :
+## 🚀 Installation
+1. Configurer le fichier `.env` (voir `.env.example`).
+2. Lancer l'infrastructure :
 ```bash
-cp .env.example .env
+docker-compose up -d
