@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3307
--- Généré le : jeu. 05 fév. 2026 à 19:16
+-- Généré le : sam. 07 fév. 2026 à 11:22
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -20,6 +20,33 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `gestion_produit`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `alerte_inflation`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `alerte_inflation`;
+CREATE TABLE `alerte_inflation` (
+`id_produit` int(11)
+,`nom` varchar(20)
+,`quantite` double
+,`prix` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `catalogue_de_luxe`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `catalogue_de_luxe`;
+CREATE TABLE `catalogue_de_luxe` (
+`nom` varchar(20)
+,`quantite` double
+,`prix` int(11)
+);
 
 -- --------------------------------------------------------
 
@@ -81,6 +108,47 @@ INSERT INTO historique_prix (id_produit, ancien_prix, nouveau_prix,date)
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `synthèse_hebdomadaire`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `synthèse_hebdomadaire`;
+CREATE TABLE `synthèse_hebdomadaire` (
+`COUNT(*)` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `alerte_inflation`
+--
+DROP TABLE IF EXISTS `alerte_inflation`;
+
+DROP VIEW IF EXISTS `alerte_inflation`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `alerte_inflation`  AS SELECT `p`.`id_produit` AS `id_produit`, `p`.`nom` AS `nom`, `p`.`quantite` AS `quantite`, `p`.`prix` AS `prix` FROM (`produits` `p` join `historique_prix` `h` on(`h`.`id_produit` = `p`.`id_produit`)) WHERE `p`.`prix` * 1.10 > `h`.`ancien_prix` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `catalogue_de_luxe`
+--
+DROP TABLE IF EXISTS `catalogue_de_luxe`;
+
+DROP VIEW IF EXISTS `catalogue_de_luxe`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `catalogue_de_luxe`  AS SELECT `produits`.`nom` AS `nom`, `produits`.`quantite` AS `quantite`, `produits`.`prix` AS `prix` FROM `produits` WHERE `produits`.`prix` > 500 ORDER BY `produits`.`prix` DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `synthèse_hebdomadaire`
+--
+DROP TABLE IF EXISTS `synthèse_hebdomadaire`;
+
+DROP VIEW IF EXISTS `synthèse_hebdomadaire`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `synthèse_hebdomadaire`  AS SELECT count(0) AS `COUNT(*)` FROM (`produits` `p` join `historique_prix` `h` on(`h`.`id_produit` = `p`.`id_produit`)) WHERE `p`.`prix` <> `h`.`ancien_prix` AND `p`.`date_mise_a_jour` > current_timestamp() - interval 7 day ;
 
 --
 -- Index pour les tables déchargées
